@@ -6,12 +6,13 @@ import {
   Renderer,
   AmbientLight,
   DirectionalLight,
+  TextureLoader,
 } from "three";
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export default class SceneInit {
-  scene: any;
+  scene: any | Scene;
   camera: any;
   renderer?: Renderer;
 
@@ -19,8 +20,6 @@ export default class SceneInit {
   nearPlane: number;
   farPlane: number;
 
-  clock?: Clock;
-  
   controls?: OrbitControls;
 
   ambientLight?: AmbientLight;
@@ -40,8 +39,6 @@ export default class SceneInit {
     this.farPlane = 1000;
     this.canvasId = canvasId;
 
-    this.clock = this.clock;
-  
     this.controls = this.controls;
 
     // NOTE: Lighting is basically required.
@@ -62,17 +59,15 @@ export default class SceneInit {
     const canvas = document.getElementById(this.canvasId);
 
     this.renderer = new WebGL1Renderer({
-        alpha: true,
+      alpha: true,
       canvas,
       amtialias: true,
     });
 
-    
     /**
      * to control the size of the orbit
      */
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-
 
     // ambient light which is for the whole scene
     this.ambientLight = new AmbientLight(0xffffff, 0.5);
@@ -98,7 +93,6 @@ export default class SceneInit {
   }
 
   render() {
-
     this.renderer?.render(this.scene, this.camera);
   }
 
