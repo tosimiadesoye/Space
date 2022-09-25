@@ -6,19 +6,31 @@ import {
   AmbientLight,
   DirectionalLight,
   AnimationMixer,
+  Mesh,
+  MeshBasicMaterial,
+  SphereGeometry,
+  Color,
+  Spherical,
+  AxesHelper,
+  InstancedMesh,
 } from "three";
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import {sphere} from '../App.jsx'
+import Space from "./space";
+
+const randomArbitrary = (min: number, max: number) => {
+  return Math.random() * (min - max) + min;
+};
 export default class SceneInit {
-  scene: any | Scene;
+  readonly scene: any | Scene = new Scene();
   camera: any;
   renderer?: Renderer;
 
-  fov: number;
-  nearPlane: number;
-  farPlane: number;
+  //camera param;
+  readonly fov: number = 45;
+  readonly nearPlane: number = 0.1;
+  readonly farPlane: number = 1000;
 
   controls?: OrbitControls;
 
@@ -27,18 +39,13 @@ export default class SceneInit {
   canvasId: string;
 
   mixer?: AnimationMixer;
+  sphereGeometry?: SphereGeometry;
 
   constructor(canvasId: string) {
     this.scene = this.scene;
     this.camera = this.camera;
     this.renderer = this.renderer;
 
-    /**
-     * camera param;
-     */
-    this.fov = 45;
-    this.nearPlane = 0.1;
-    this.farPlane = 1000;
     this.canvasId = canvasId;
 
     this.controls = this.controls;
@@ -49,7 +56,6 @@ export default class SceneInit {
   }
 
   initialize() {
-    this.scene = new Scene();
     this.camera = new PerspectiveCamera(
       this.fov,
       window.innerWidth / window.innerHeight,
@@ -57,7 +63,7 @@ export default class SceneInit {
       this.farPlane
     );
     this.camera.position.z = 48;
-    this.camera.rotation.x = Math.PI/2
+    this.camera.rotation.x = Math.PI / 2;
 
     const canvas = document.getElementById(this.canvasId);
 
@@ -95,7 +101,7 @@ export default class SceneInit {
     z = 0
   ) {
     const loader = new FBXLoader();
-    // loader.setPath("src/resources/FBX/");
+
     loader.load(character, (object) => {
       object.position.set(x, y, z);
       object.scale.setScalar(0.1);
@@ -104,7 +110,7 @@ export default class SceneInit {
       });
 
       const float = new FBXLoader();
-      // float.setPath("src/resources/FBX/");
+
       float.load(animaion, (anim) => {
         this.mixer = new AnimationMixer(object);
         const idle = this.mixer.clipAction(anim.animations[0]);
@@ -113,14 +119,41 @@ export default class SceneInit {
       this.scene.add(object);
     });
   }
+
+  star() {
+    const spheres = [];
+    for (let i = 0; i < 300; i++) {
+      this.sphereGeometry = new SphereGeometry(
+        0.05,
+        0.2 * randomArbitrary(0.5, 1),
+        6,
+        6
+      );
+      let material = new MeshBasicMaterial({
+        color: 0xaaaaaa,
+      });
+
+      let sphere = new Mesh(this.sphereGeometry, material);
+
+      this.scene.add(sphere);
+      spheres.push(sphere);
+      sphere.position.setFromSpherical(
+        new Spherical(
+          Math.random() * 600 - 200,
+          Math.random() * 600 - 200,
+          Math.random() * 600 - 200
+        )
+      );
+    }
+  }
   animate() {
-    // make earth rotate
-    // sphere.rotation.x = 0.5/1000
-    // sphere.rotation.y = 0.5/1000
+    // make earth rotate in the future
 
     window.requestAnimationFrame(this.animate.bind(this));
     this.render();
-
+    //rotate scene
+    // this.scene.rotation.y += 0.001;
+    // this.scene.rotation.z -= 0.001;
     this.controls?.update();
   }
 
