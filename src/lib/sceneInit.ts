@@ -2,16 +2,17 @@ import {
   WebGL1Renderer,
   PerspectiveCamera,
   Scene,
-  Clock,
   Renderer,
   AmbientLight,
   DirectionalLight,
+  AnimationMixer,
 } from "three";
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 
 export default class SceneInit {
-  scene: any;
+  scene: any | Scene;
   camera: any;
   renderer?: Renderer;
 
@@ -19,13 +20,13 @@ export default class SceneInit {
   nearPlane: number;
   farPlane: number;
 
-  clock?: Clock;
-  
   controls?: OrbitControls;
 
   ambientLight?: AmbientLight;
   directionalLight?: DirectionalLight;
   canvasId: string;
+
+  mixer?: AnimationMixer;
 
   constructor(canvasId: string) {
     this.scene = this.scene;
@@ -40,8 +41,6 @@ export default class SceneInit {
     this.farPlane = 1000;
     this.canvasId = canvasId;
 
-    this.clock = this.clock;
-  
     this.controls = this.controls;
 
     // NOTE: Lighting is basically required.
@@ -58,21 +57,20 @@ export default class SceneInit {
       this.farPlane
     );
     this.camera.position.z = 48;
+    this.camera.rotation.x = Math.PI/2
 
     const canvas = document.getElementById(this.canvasId);
 
     this.renderer = new WebGL1Renderer({
-        alpha: true,
+      alpha: true,
       canvas,
       amtialias: true,
     });
 
-    
     /**
      * to control the size of the orbit
      */
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-
 
     // ambient light which is for the whole scene
     this.ambientLight = new AmbientLight(0xffffff, 0.5);
@@ -88,9 +86,38 @@ export default class SceneInit {
     // if window resizes
     window.addEventListener("resize", () => this.onWindowResize(), false);
   }
+  //will eventual create a character control when the animaion works
+  loadAnimatedModel(
+    character: string,
+    animaion: string,
+    x: number,
+    y: number,
+    z = 0
+  ) {
+    const loader = new FBXLoader();
+    // loader.setPath("src/resources/FBX/");
+    loader.load(character, (object) => {
+      object.position.set(x, y, z);
+      object.scale.setScalar(0.1);
+      object.traverse((c) => {
+        c.castShadow = true;
+      });
+
+      const float = new FBXLoader();
+      // float.setPath("src/resources/FBX/");
+      float.load(animaion, (anim) => {
+        this.mixer = new AnimationMixer(object);
+        const idle = this.mixer.clipAction(anim.animations[0]);
+        idle.play();
+      });
+      this.scene.add(object);
+    });
+  }
   animate() {
-    // NOTE: Window is implied.
-    // requestAnimationFrame(this.animate.bind(this));
+    // make earth rotate
+    // sphere.rotation.x = 0.5/1000
+    // sphere.rotation.y = 0.5/1000
+
     window.requestAnimationFrame(this.animate.bind(this));
     this.render();
 
@@ -98,7 +125,6 @@ export default class SceneInit {
   }
 
   render() {
-
     this.renderer?.render(this.scene, this.camera);
   }
 

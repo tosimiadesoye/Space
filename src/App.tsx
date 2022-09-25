@@ -1,39 +1,33 @@
 import { useEffect } from "react";
 
-import {
-  SphereGeometry,
-  MeshPhongMaterial,
-  Mesh,
-  TextureLoader,
-  MeshStandardMaterial,
-  ImageUtils,
-} from "three";
+import { SphereGeometry, MeshPhongMaterial, Mesh, TextureLoader } from "three";
 
 import SceneInit from "./lib/sceneInit";
+
 function App() {
   useEffect(() => {
     const canvasScene = new SceneInit("canvas");
     canvasScene.initialize();
     canvasScene.animate();
-
+    let anstronaut = canvasScene.loadAnimatedModel('/resources/FBX/astronaut.fbx', '/resources/FBX/floating.fbx', 10, 0);
+    let alien = canvasScene.loadAnimatedModel('/resources/FBX/alien.fbx', '/resources/FBX/SwimmingToEdge.fbx', -10, 0);
     const textureLoader = new TextureLoader();
 
     const sphereGeometry = new SphereGeometry(6, 32, 32);
-     const sphereMaterial = new MeshPhongMaterial({map: textureLoader.load('/images/earth1')});
-    // const sphereMaterial = new MeshStandardMaterial({map: textureLoader.load('/images/earth2')});
+    const sphereMaterial = new MeshPhongMaterial({
+      map: textureLoader.load("/images/earth2.jpg"),
+      transparent: true,
+    });
     const sphere = new Mesh(sphereGeometry, sphereMaterial);
     canvasScene.scene?.add(sphere);
 
-
-    
-
-    textureLoader.load("/images/stars.jpg", function (texture) {
-      canvasScene.scene.backgroud = texture;
+    textureLoader.load("/images/space.jpg", function (texture) {
+      canvasScene.scene.background = texture;
     });
   }, []);
   return (
     <div>
-      <canvas id="canvas" />
+      <canvas id="canvas"></canvas>
     </div>
   );
 }
