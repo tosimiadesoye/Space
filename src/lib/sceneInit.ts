@@ -10,7 +10,7 @@ import {
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-
+import {sphere} from '../App.jsx'
 export default class SceneInit {
   scene: any | Scene;
   camera: any;
