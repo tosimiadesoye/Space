@@ -6,22 +6,21 @@ import {
   AmbientLight,
   DirectionalLight,
   AnimationMixer,
-  Mesh,
-  MeshBasicMaterial,
   SphereGeometry,
-  Color,
-  Spherical,
-  AxesHelper,
-  InstancedMesh,
+  FogExp2,
+  BufferGeometry,
+  TextureLoader,
+  Float32BufferAttribute,
+  PointsMaterial,
+  Points,
 } from "three";
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import Space from "./space";
+import Stats from "three/examples/jsm/libs/stats.module";
+import { GUI } from "dat.gui";
 
-const randomArbitrary = (min: number, max: number) => {
-  return Math.random() * (min - max) + min;
-};
+
 export default class SceneInit {
   readonly scene: any | Scene = new Scene();
   camera: any;
@@ -41,6 +40,21 @@ export default class SceneInit {
   mixer?: AnimationMixer;
   sphereGeometry?: SphereGeometry;
 
+  material?: PointsMaterial;
+
+  // pointer
+  pointerX = 0;
+  pointerY = 0;
+
+  //window
+  windowHalfX = window.innerWidth / 2;
+  windowHalfY = window.innerHeight / 2;
+
+  // stats
+  stats?: Stats;
+
+  //gui
+  gui?: GUI;
   constructor(canvasId: string) {
     this.scene = this.scene;
     this.camera = this.camera;
@@ -62,8 +76,10 @@ export default class SceneInit {
       this.nearPlane,
       this.farPlane
     );
-    this.camera.position.z = 48;
+    this.camera.position.z = 45;
     this.camera.rotation.x = Math.PI / 2;
+
+    this.scene.fog = new FogExp2(0x000000, 0.001);
 
     const canvas = document.getElementById(this.canvasId);
 
@@ -72,7 +88,9 @@ export default class SceneInit {
       canvas,
       amtialias: true,
     });
-
+    // this.renderer.setPixelRatio(window.devicePixelRatio);
+    // this.renderer.setSize(window.innerWidth, window.innerHeight);
+    // this.document.body.appendChild(this.renderer.domElement);
     /**
      * to control the size of the orbit
      */
@@ -120,50 +138,85 @@ export default class SceneInit {
     });
   }
 
-  star() {
-    const spheres = [];
-    for (let i = 0; i < 300; i++) {
-      this.sphereGeometry = new SphereGeometry(
-        0.05,
-        0.2 * randomArbitrary(0.5, 1),
-        6,
-        6
-      );
-      let material = new MeshBasicMaterial({
-        color: 0xaaaaaa,
-      });
+  spaceEffect() {
+    const geometry = new BufferGeometry();
+    const vertices = [];
 
-      let sphere = new Mesh(this.sphereGeometry, material);
-
-      this.scene.add(sphere);
-      spheres.push(sphere);
-      sphere.position.setFromSpherical(
-        new Spherical(
-          Math.random() * 600 - 200,
-          Math.random() * 600 - 200,
-          Math.random() * 600 - 200
-        )
-      );
+    const sprite = new TextureLoader().load("images/disc.png");
+    for (let i = 0; i < 1000; i++) {
+      const x = 2000 * Math.random() - 1000;
+      const y = 2000 * Math.random() - 1000;
+      const z = 2000 * Math.random() - 1000;
+      vertices.push(x, y, z);
     }
+    geometry.setAttribute("position", new Float32BufferAttribute(vertices, 3));
+    this.material = new PointsMaterial({
+      size: 20,
+      sizeAttenuation: true,
+      map: sprite,
+      alphaTest: 0.5,
+      transparent: true,
+    });
+    this.material.color.setHSL(1.0, 0.3, 0.7);
+    const particles = new Points(geometry, this.material);
+    this.scene.add(particles);
+
+    // stats
+    this.stats = Stats();
+    document.body.appendChild(this.stats.dom);
+
+    //GUI
+    this.gui = new GUI();
+    this.gui.add(this.material, "sizeAttenuation").onChange(() => {
+      this.material.needsUpdate = true;
+    });
+    this.gui.open();
+
+    //pointer
+    document.body.style.touchAction = "none";
+    document.body.addEventListener("pointermove", this.onPointerMove);
+
+    window.addEventListener("resize", this.onWindowResize);
   }
   animate() {
-    // make earth rotate in the future
-
     window.requestAnimationFrame(this.animate.bind(this));
     this.render();
+
     //rotate scene
-    // this.scene.rotation.y += 0.001;
-    // this.scene.rotation.z -= 0.001;
+    //  this.scene.rotation.y += 0.001;
+    //  this.scene.rotation.z -= 0.001;
+
     this.controls?.update();
+    this.stats?.update();
   }
 
   render() {
+    const time = Date.now() * 0.00005;
+
+    this.camera.position.x += (this.pointerX - this.camera.position.x) * 0.05;
+    this.camera.position.y += (-this.pointerY - this.camera.position.y) * 0.05;
+
+    this.camera.lookAt(this.scene.position);
+
+    const h = ((360 * (1.0 + time)) % 360) / 360;
+    this.material?.color.setHSL(h, 0.5, 0.5);
+
     this.renderer?.render(this.scene, this.camera);
   }
 
   onWindowResize() {
+    this.windowHalfX = window.innerWidth / 2;
+    this.windowHalfY = window.innerHeight / 2;
+
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer?.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  onPointerMove(e: PointerEvent) {
+    if (e.isPrimary === false) return;
+
+    this.pointerX = e.x - this.windowHalfX;
+    this.pointerY = e.y - this.windowHalfY;
   }
 }

@@ -17,14 +17,15 @@ function App() {
   useEffect(() => {
     const canvasScene = new SceneInit("canvas");
     canvasScene.initialize();
-    canvasScene.star();
-    
+    canvasScene.spaceEffect();
+
     let astronaut = canvasScene.loadAnimatedModel(
       "/resources/FBX/astronaut.fbx",
       "/resources/FBX/floating.fbx",
       7,
       -10
     );
+
     let alien = canvasScene.loadAnimatedModel(
       "/resources/FBX/alien.fbx",
       "/resources/FBX/swimmingToEdge.fbx",
