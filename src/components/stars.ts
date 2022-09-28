@@ -35,7 +35,7 @@ export const spaceEffect = async () => {
   material.color.setHSL(1.0, 0.3, 0.7);
   const particles = new Points(geometry, material);
   scene.add(particles);
-console.log('even on here')
+
   //GUI
   gui = new GUI();
   gui.add(material, "sizeAttenuation").onChange(() => {

@@ -50,7 +50,6 @@ export class Game {
     document.body.addEventListener("pointermove", this.onPointerMove);
 
     //
-    console.log("i think it the scene");
     window.addEventListener("resize", this.onWindowResize);
   };
 

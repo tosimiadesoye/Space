@@ -30,7 +30,9 @@ onMounted(async () => {
   webgl.value = new Game(container.value);
   console.log(container.value);
 
-  await spaceEffect();
+  const l = await spaceEffect();
+
+  console.log(l)
 
   const sunGeometry = new SphereGeometry(8);
   const sunTexture = new TextureLoader().load(sun);
@@ -39,18 +41,17 @@ onMounted(async () => {
   const solarSystem = new Group();
   solarSystem.add(sunMesh);
   scene.add(solarSystem);
-  console.log("nothing is displaying");
 
   const earth = new Planet(3, 32, earthPic);
   const earthMesh = earth.getMesh();
-  let earthsSystem = new Group();
-  earthsSystem.add(earthMesh);
+  let earthSystem = new Group();
+  earthSystem.add(earthMesh);
 
-  solarSystem.add(earthsSystem);
+  solarSystem.add(earthSystem);
 
   const earthRotation = new Rotation(earthMesh);
   const earthRotationMesh = earthRotation.getMesh();
-  earthsSystem.add(earthRotationMesh);
+  earthSystem.add(earthRotationMesh);
 
   let game = new Game(container.value);
   await game.animate();
