@@ -8,11 +8,9 @@ import {
 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 
-
 export const scene: any | Scene = new Scene();
 
 export class Game {
-  
   camera?: any | Camera;
   renderer?: Renderer;
   stats?: Stats;
@@ -23,14 +21,11 @@ export class Game {
   windowHalfX = window.innerWidth / 2;
   windowHalfY = window.innerHeight / 2;
 
-  
-
   constructor(readonly container: HTMLElement) {
-
     this.camera = this.camera;
     this.renderer = this.renderer;
-    
-    this.initialise()
+
+    this.initialise();
   }
   initialise = async () => {
     this.camera = new PerspectiveCamera(
@@ -51,12 +46,11 @@ export class Game {
     this.stats = Stats();
     document.body.appendChild(this.stats.dom);
 
-
     document.body.style.touchAction = "none";
     document.body.addEventListener("pointermove", this.onPointerMove);
 
     //
-
+    console.log("i think it the scene");
     window.addEventListener("resize", this.onWindowResize);
   };
 
@@ -74,16 +68,16 @@ export class Game {
 
     this.pointerX = event.clientX - this.windowHalfX;
     this.pointerY = event.clientY - this.windowHalfY;
-  }
+  };
 
   //
 
-  animate = async() => {
+  animate = async () => {
     window.requestAnimationFrame(this.animate.bind(this));
 
     this.render();
     this.stats?.update();
-  }
+  };
 
   render = async () => {
     const time = Date.now() * 0.00005;
@@ -97,5 +91,5 @@ export class Game {
     // this.material?.color.setHSL(h, 0.5, 0.5);
 
     this.renderer?.render(scene, this.camera);
-  }
+  };
 }
