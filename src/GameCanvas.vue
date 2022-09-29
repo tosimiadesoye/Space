@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, onUnmounted } from "vue";
 import { Game, scene } from "./game";
 import { spaceEffect } from "./components/stars";
 
@@ -32,6 +32,9 @@ onMounted(async () => {
 
    await spaceEffect();
 
+
+});
+
   const sunGeometry = new SphereGeometry(40);
   const sunTexture = new TextureLoader().load(sun);
   const sunMaterial = new MeshBasicMaterial({ map: sunTexture });
@@ -40,8 +43,6 @@ onMounted(async () => {
   const solarSystem = new Group();
   solarSystem.add(sunMesh);
   scene.add(solarSystem);
-
-  console.log(solarSystem)
 
   const earth = new Planet(30, 20, earthPic);
   const earthMesh = earth.getMesh();
@@ -54,9 +55,6 @@ onMounted(async () => {
   const earthRotationMesh = earthRotation.getMesh();
   earthSystem.add(earthRotationMesh);
 
-  let game = new Game(container.value);
-  await game.animate();
-});
 </script>
 <style scoped>
 .xr-container {

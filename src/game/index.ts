@@ -52,8 +52,9 @@ export class Game {
     // const controls = new OrbitControls(this.camera, this.renderer.domElement);
     // controls.update();
 
-    document.body.style.touchAction = "none";
-    document.body.addEventListener("pointermove", this.onPointerMove);
+    //pointer
+    // document.body.style.touchAction = "none";
+    // document.body.addEventListener("pointermove", this.onPointerMove);
 
     //
     window.addEventListener("resize", this.onWindowResize);
