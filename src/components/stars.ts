@@ -4,6 +4,7 @@ import {
   Float32BufferAttribute,
   PointsMaterial,
   Points,
+  Color,
 } from "three";
 
 import { GUI } from "dat.gui";
@@ -23,16 +24,17 @@ export const spaceEffect = async () => {
     const y = 2000 * Math.random() - 1000;
     const z = 2000 * Math.random() - 1000;
     vertices.push(x, y, z);
+    
   }
   geometry.setAttribute("position", new Float32BufferAttribute(vertices, 3));
   material = new PointsMaterial({
-    size: 20,
+    size: 8,
     sizeAttenuation: true,
     map: sprite,
     alphaTest: 0.5,
     transparent: true,
   });
-  material.color.setHSL(1.0, 0.3, 0.7);
+  material.color = new Color("hsl(184, 54%, 100%)")
   const particles = new Points(geometry, material);
   scene.add(particles);
 
@@ -43,3 +45,8 @@ export const spaceEffect = async () => {
   });
   gui.open();
 };
+
+export const animateTwinkle = ()=>{
+  let lightness = 0
+  
+}

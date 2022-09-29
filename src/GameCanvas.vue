@@ -28,21 +28,22 @@ const webgl = ref<Game>();
 onMounted(async () => {
   if (!container.value) return;
   webgl.value = new Game(container.value);
-  console.log(container.value);
+  console.log(container);
 
-  const l = await spaceEffect();
+   await spaceEffect();
 
-  console.log(l)
-
-  const sunGeometry = new SphereGeometry(8);
+  const sunGeometry = new SphereGeometry(40);
   const sunTexture = new TextureLoader().load(sun);
   const sunMaterial = new MeshBasicMaterial({ map: sunTexture });
   const sunMesh = new Mesh(sunGeometry, sunMaterial);
+  sunMesh.position.x = 180
   const solarSystem = new Group();
   solarSystem.add(sunMesh);
   scene.add(solarSystem);
 
-  const earth = new Planet(3, 32, earthPic);
+  console.log(solarSystem)
+
+  const earth = new Planet(30, 20, earthPic);
   const earthMesh = earth.getMesh();
   let earthSystem = new Group();
   earthSystem.add(earthMesh);

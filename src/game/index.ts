@@ -7,8 +7,9 @@ import {
   FogExp2,
 } from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-export const scene: any | Scene = new Scene();
+export const scene = new Scene();
 
 export class Game {
   camera?: any | Camera;
@@ -26,6 +27,8 @@ export class Game {
     this.renderer = this.renderer;
 
     this.initialise();
+    this.render();
+    this.animate();
   }
   initialise = async () => {
     this.camera = new PerspectiveCamera(
@@ -45,6 +48,9 @@ export class Game {
 
     this.stats = Stats();
     document.body.appendChild(this.stats.dom);
+
+    // const controls = new OrbitControls(this.camera, this.renderer.domElement);
+    // controls.update();
 
     document.body.style.touchAction = "none";
     document.body.addEventListener("pointermove", this.onPointerMove);
