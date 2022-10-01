@@ -12,6 +12,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 export const scene = new Scene();
 
 export class Game {
+  [x: string]: any;
   camera?: any | Camera;
   renderer?: Renderer;
   stats?: Stats;
@@ -49,12 +50,17 @@ export class Game {
     this.stats = Stats();
     document.body.appendChild(this.stats.dom);
 
-    // const controls = new OrbitControls(this.camera, this.renderer.domElement);
-    // controls.update();
+     const controls = new OrbitControls(this.camera, this.renderer.domElement);
+     controls.autoRotate = true
+     controls.autoRotateSpeed = 4
+     controls.maxDistance = 350
+     controls.minDistance = 150 
+     controls.enablePan = false
+     controls.update();
 
     //pointer
-    // document.body.style.touchAction = "none";
-    // document.body.addEventListener("pointermove", this.onPointerMove);
+     document.body.style.touchAction = "none";
+     document.body.addEventListener("pointermove", this.onPointerMove);
 
     //
     window.addEventListener("resize", this.onWindowResize);
@@ -69,11 +75,11 @@ export class Game {
 
     this.renderer?.setSize(window.innerWidth, window.innerHeight);
   };
-  onPointerMove = async (event: PointerEvent) => {
-    if (event.isPrimary === false) return;
+  onPointerMove = async (e: PointerEvent) => {
+    if (e.isPrimary === false) return;
 
-    this.pointerX = event.clientX - this.windowHalfX;
-    this.pointerY = event.clientY - this.windowHalfY;
+    this.pointerX = e.x - this.windowHalfX;
+    this.pointerY = e.y - this.windowHalfY;
   };
 
   //
@@ -94,7 +100,7 @@ export class Game {
     this.camera.lookAt(scene.position);
 
     const h = ((360 * (1.0 + time)) % 360) / 360;
-    // this.material?.color.setHSL(h, 0.5, 0.5);
+     this.material?.color.setHSL(h, 0.5, 0.5);
 
     this.renderer?.render(scene, this.camera);
   };

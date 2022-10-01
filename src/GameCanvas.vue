@@ -35,16 +35,16 @@ onMounted(async () => {
 
 });
 
-  const sunGeometry = new SphereGeometry(40);
+  const sunGeometry = new SphereGeometry(60);
   const sunTexture = new TextureLoader().load(sun);
   const sunMaterial = new MeshBasicMaterial({ map: sunTexture });
   const sunMesh = new Mesh(sunGeometry, sunMaterial);
-  sunMesh.position.x = 180
+  sunMesh.position.set(-180, 0, 0,)
   const solarSystem = new Group();
   solarSystem.add(sunMesh);
   scene.add(solarSystem);
 
-  const earth = new Planet(30, 20, earthPic);
+  const earth = new Planet(50, 20, earthPic);
   const earthMesh = earth.getMesh();
   let earthSystem = new Group();
   earthSystem.add(earthMesh);
@@ -54,6 +54,7 @@ onMounted(async () => {
   const earthRotation = new Rotation(earthMesh);
   const earthRotationMesh = earthRotation.getMesh();
   earthSystem.add(earthRotationMesh);
+
 
 </script>
 <style scoped>

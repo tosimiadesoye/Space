@@ -5,48 +5,51 @@ import {
   PointsMaterial,
   Points,
   Color,
+  AdditiveBlending,
 } from "three";
 
 import { GUI } from "dat.gui";
 import { scene } from "../game";
-import star from "../assets/image/disc.png";
+import textureStar from "../assets/image/disc.png";
 
-let material: PointsMaterial;
+let starMaterial: PointsMaterial;
 let gui: GUI;
 
 export const spaceEffect = async () => {
-  const geometry = new BufferGeometry();
+  const StarGeometry = new BufferGeometry();
   const vertices = [];
 
-  const sprite = new TextureLoader().load(star);
+  const sprite = new TextureLoader().load(textureStar);
   for (let i = 0; i < 1000; i++) {
     const x = 2000 * Math.random() - 1000;
     const y = 2000 * Math.random() - 1000;
     const z = 2000 * Math.random() - 1000;
+    console.log(x)
     vertices.push(x, y, z);
     
   }
-  geometry.setAttribute("position", new Float32BufferAttribute(vertices, 3));
-  material = new PointsMaterial({
-    size: 8,
+  StarGeometry.setAttribute("position", new Float32BufferAttribute(vertices, 3));
+  starMaterial = new PointsMaterial({
+    size: 5,
     sizeAttenuation: true,
     map: sprite,
     alphaTest: 0.5,
     transparent: true,
+    opacity:0.8,
+    blending: AdditiveBlending
   });
-  material.color = new Color("hsl(184, 54%, 100%)")
-  const particles = new Points(geometry, material);
-  scene.add(particles);
+  starMaterial.color = new Color("hsl(184, 54%, 100%)")
+  starMaterial.depthWrite = false;
+  const stars = new Points(StarGeometry, starMaterial);
+  scene.add(stars);
 
   //GUI
   gui = new GUI();
-  gui.add(material, "sizeAttenuation").onChange(() => {
-    material.needsUpdate = true;
+  gui.add(starMaterial, "sizeAttenuation").onChange(() => {
+    starMaterial.needsUpdate = true;
   });
   gui.open();
+
 };
 
-export const animateTwinkle = ()=>{
-  let lightness = 0
-  
-}
+
