@@ -1,6 +1,6 @@
 import { BoxGeometry, MeshNormalMaterial, Mesh } from "three";
 
-export default class Planet {
+export default class Rotation {
   planetPositionX: any;
   showRotation: boolean;
   mesh?: Mesh;

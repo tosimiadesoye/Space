@@ -4,7 +4,6 @@ import {
   Float32BufferAttribute,
   PointsMaterial,
   Points,
-  Color,
   AdditiveBlending,
 } from "three";
 
@@ -24,13 +23,12 @@ export const spaceEffect = async () => {
     const x = 2000 * Math.random() - 1000;
     const y = 2000 * Math.random() - 1000;
     const z = 2000 * Math.random() - 1000;
-    console.log(x)
     vertices.push(x, y, z);
     
   }
   StarGeometry.setAttribute("position", new Float32BufferAttribute(vertices, 3));
   starMaterial = new PointsMaterial({
-    size: 5,
+    size: 8,
     sizeAttenuation: true,
     map: sprite,
     alphaTest: 0.5,
@@ -38,7 +36,6 @@ export const spaceEffect = async () => {
     opacity:0.8,
     blending: AdditiveBlending
   });
-  starMaterial.color = new Color("hsl(184, 54%, 100%)")
   starMaterial.depthWrite = false;
   const stars = new Points(StarGeometry, starMaterial);
   scene.add(stars);
@@ -50,6 +47,15 @@ export const spaceEffect = async () => {
   });
   gui.open();
 
+
+  function animate(){
+      // Rotate and change saturation lightness of each star
+     stars.rotation.x += 0.005
+     stars.rotation.y += 0.005
+    requestAnimationFrame(animate)
+  
+  }
+  animate()
 };
 
 

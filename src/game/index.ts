@@ -10,10 +10,10 @@ import Stats from "three/examples/jsm/libs/stats.module";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export const scene = new Scene();
-
+export let  camera: any | Camera = new Camera()
 export class Game {
   [x: string]: any;
-  camera?: any | Camera;
+ 
   renderer?: Renderer;
   stats?: Stats;
 
@@ -24,7 +24,6 @@ export class Game {
   windowHalfY = window.innerHeight / 2;
 
   constructor(readonly container: HTMLElement) {
-    this.camera = this.camera;
     this.renderer = this.renderer;
 
     this.initialise();
@@ -32,13 +31,13 @@ export class Game {
     this.animate();
   }
   initialise = async () => {
-    this.camera = new PerspectiveCamera(
+    camera = new PerspectiveCamera(
       55,
       window.innerWidth / window.innerHeight,
       2,
       2000
     );
-    this.camera.position.z = 1000;
+    camera.position.z = 1000;
 
     scene.fog = new FogExp2(0x000000, 0.001);
 
@@ -50,7 +49,7 @@ export class Game {
     this.stats = Stats();
     document.body.appendChild(this.stats.dom);
 
-     const controls = new OrbitControls(this.camera, this.renderer.domElement);
+     const controls = new OrbitControls(camera, this.renderer.domElement);
      controls.autoRotate = true
      controls.autoRotateSpeed = 4
      controls.maxDistance = 350
@@ -70,8 +69,8 @@ export class Game {
     this.windowHalfX = window.innerWidth / 2;
     this.windowHalfY = window.innerHeight / 2;
 
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
 
     this.renderer?.setSize(window.innerWidth, window.innerHeight);
   };
@@ -94,14 +93,14 @@ export class Game {
   render = async () => {
     const time = Date.now() * 0.00005;
 
-    this.camera.position.x += (this.pointerX - this.camera.position.x) * 0.05;
-    this.camera.position.y += (-this.pointerY - this.camera.position.y) * 0.05;
+    camera.position.x += (this.pointerX - camera.position.x) * 0.05;
+    camera.position.y += (-this.pointerY - camera.position.y) * 0.05;
 
-    this.camera.lookAt(scene.position);
+    camera.lookAt(scene.position);
 
     const h = ((360 * (1.0 + time)) % 360) / 360;
      this.material?.color.setHSL(h, 0.5, 0.5);
 
-    this.renderer?.render(scene, this.camera);
+    this.renderer?.render(scene, camera);
   };
 }
