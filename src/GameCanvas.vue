@@ -1,14 +1,17 @@
 <template>
-  <div ref="container" class="xr-container"></div>
+  <div ref="container" class="xr-container"> 
+    <div>
+      <button class="song" :click="audio()">play</button>
+    </div>
+  </div>
+
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, onUnmounted } from "vue";
+import { onMounted, ref } from "vue";
 import { Game, scene } from "./game";
-import { spaceEffect } from "./components/stars";
+import {Planet, Rotation, spaceEffect, audio} from "./lib";
 
-import Planet from "./lib/planet";
-import Rotation from "./lib/rotation";
 import {
   MeshBasicMaterial,
   SphereGeometry,
@@ -28,23 +31,21 @@ const webgl = ref<Game>();
 onMounted(async () => {
   if (!container.value) return;
   webgl.value = new Game(container.value);
-  console.log(container);
-
    await spaceEffect();
 
 
 });
 
-  const sunGeometry = new SphereGeometry(60);
+  const sunGeometry = new SphereGeometry(40);
   const sunTexture = new TextureLoader().load(sun);
   const sunMaterial = new MeshBasicMaterial({ map: sunTexture });
   const sunMesh = new Mesh(sunGeometry, sunMaterial);
-  sunMesh.position.set(-180, 0, 0,)
+  sunMesh.position.set(-80, 0, 0,)
   const solarSystem = new Group();
   solarSystem.add(sunMesh);
   scene.add(solarSystem);
 
-  const earth = new Planet(50, 20, earthPic);
+  const earth = new Planet(20, 20, earthPic);
   const earthMesh = earth.getMesh();
   let earthSystem = new Group();
   earthSystem.add(earthMesh);
@@ -61,5 +62,13 @@ onMounted(async () => {
 .xr-container {
   position: relative;
   overflow: hidden;
+}
+.song{
+  background-color: rgb(255, 172, 127);
+  border: 2px solid rgba(131, 19, 19, 0.101);
+  border-radius: 5px;
+  padding: 20px;
+  z-index: 10000;
+   margin: 50px 0;
 }
 </style>
